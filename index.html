@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediTrack Pulse — Live Inventory Prototype</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar"><div class="brand"><span class="logo">✚</span><span><b>MediTrack</b><small>Pulse</small></span></div>
+<p class="side-label">WORKSPACE</p><a class="side-link active" href="#dashboard">▦ Dashboard</a>
+<p class="side-label">MANAGEMENT</p><a class="side-link" href="#inventory">▤ Pharmacy inventory</a><a class="side-link" href="#alerts">⚑ Stock-out alerts</a><a class="side-link" href="#centres">⌂ Health centres</a><a class="side-link" href="#transfers">⇄ Transfer requests</a>
+<div class="sidebar-bottom"><span class="avatar">PH</span><span><b>PHC Pharmacist</b><small>Local demo mode</small></span></div></aside>
+<main class="main">
+<header class="topbar"><button id="menuBtn" class="menu">☰</button><span>Workspace <span class="muted">/</span> Pharmacy Management</span><div class="top-right"><span class="dot"></span> API connected <button id="refreshBtn" class="button light">↻ Refresh</button></div></header>
+<section class="page-head" id="dashboard"><div><span class="eyebrow">MEDICINE INVENTORY</span><h1>✚ Pharmacy Management</h1><p>Predict shortages early and coordinate stock across nearby health centres.</p></div><button class="button primary" id="addBtn">＋ Add medicine</button></section>
+<section class="stats">
+<div class="stat blue"><span>Total inventory items</span><b id="total">—</b><small>Across registered centres</small></div>
+<div class="stat amber"><span>Low stock</span><b id="low">—</b><small>Needs attention</small></div>
+<div class="stat red"><span>Critical / stock-out risk</span><b id="critical">—</b><small>Act as soon as possible</small></div>
+<div class="stat green"><span>Health centres</span><b id="centreCount">—</b><small>Registered in this demo</small></div>
+<div class="stat purple"><span>Pending transfers</span><b id="pending">—</b><small>Awaiting staff review</small></div>
+</section>
+<section id="alerts" class="alert-box"><div class="alert-symbol">!</div><div><b>Early warning alerts</b><p id="alertText">Loading live inventory…</p></div></section>
+<section class="panel" id="inventory"><div class="panel-head"><div><h2>Medicine stock overview</h2><p>Saved in SQLite database</p></div><button class="button light" id="exportBtn">⇩ Export CSV</button></div>
+<div class="filters"><input id="search" placeholder="Search medicine or centre…"><select id="centreFilter"><option value="">All health centres</option></select><select id="statusFilter"><option value="">All statuses</option><option>Critical</option><option>Low stock</option><option>Healthy</option><option>Check usage</option></select></div>
+<div class="table-wrap"><table><thead><tr><th>Medicine / health centre</th><th>Stock</th><th>Daily usage</th><th>Days left</th><th>Next delivery</th><th>Status</th><th>Action</th></tr></thead><tbody id="medicineRows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div><p class="footnote">Predictions are estimates. Confirm actual stock, consumption and delivery dates before acting.</p></section>
+<div class="bottom-grid">
+<section class="panel" id="centres"><div class="panel-head"><div><h2>Surplus stock matching</h2><p>Find other centres with the same medicine</p></div></div><p class="helper">Choose a medicine in the table and click <b>Find surplus</b>. The system excludes each source centre's minimum reserve.</p><div id="matchResults" class="list"><p class="empty">Select a medicine to search for possible matches.</p></div></section>
+<section class="panel" id="transfers"><div class="panel-head"><div><h2>Transfer requests</h2><p>Proposals are not completed transfers</p></div></div><div id="transferRows" class="list"><p class="empty">Loading requests…</p></div></section>
+</div>
+<footer>Hackathon prototype · Local database · Sample records only. Do not use for clinical decisions or real medicine movement without authorization.</footer>
+</main></div>
+<dialog id="addDialog"><form id="addForm"><div class="dialog-head"><div><h2>Add medicine</h2><p>Record an inventory item for a health centre.</p></div><button type="button" class="x" id="closeDialog">×</button></div>
+<label>Health centre<select name="centre_id" id="formCentre" required></select></label><label>Medicine name<input name="name" required placeholder="Paracetamol Syrup 125 mg/5 ml"></label>
+<div class="two"><label>Category<input name="category" value="General"></label><label>Unit<input name="unit" value="bottles" required></label></div>
+<div class="two"><label>Current stock<input name="stock" type="number" min="0" required value="0"></label><label>Daily usage<input name="daily_usage" type="number" min="0" step="0.1" required value="1"></label></div>
+<div class="two"><label>Minimum reserve<input name="minimum_stock" type="number" min="0" value="10"></label><label>Expiry date<input name="expiry_date" type="date"></label></div>
+<label>Next delivery date<input name="next_delivery_date" type="date"></label><div class="dialog-actions"><button type="button" class="button light" id="cancelDialog">Cancel</button><button class="button primary" type="submit">Save to database</button></div></form></dialog>
+<div id="toast" class="toast"></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
